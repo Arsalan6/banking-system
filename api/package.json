@@ -4,6 +4,7 @@
   "description": "API for banking system web app",
   "main": "app.js",
   "scripts": {
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -25,6 +26,14 @@
   },
   "homepage": "https://github.com/Arsalan6/banking-system#readme",
   "dependencies": {
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "cors": "^2.8.5",
+    "morgan": "^1.10.0",
+    "winston": "^3.3.3",
+    "winston-daily-rotate-file": "^4.5.5",
+    "glob": "^7.2.0",
+    "sequelize": "^6.37.2",
+    "mysql2": "^2.3.0",
+    "dotenv": "^10.0.0"
   }
 }
