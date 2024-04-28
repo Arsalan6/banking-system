@@ -1,0 +1,30 @@
+{
+  "name": "bank_system_api",
+  "version": "1.0.0",
+  "description": "API for banking system web app",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Arsalan6/banking-system.git"
+  },
+  "keywords": [
+    "nodejs",
+    "reactjs",
+    "bank",
+    "tailwind",
+    "express",
+    "sequelize"
+  ],
+  "author": "Arsalan Ali",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Arsalan6/banking-system/issues"
+  },
+  "homepage": "https://github.com/Arsalan6/banking-system#readme",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
