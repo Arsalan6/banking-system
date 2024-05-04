@@ -111,230 +111,25 @@ module.exports = {
 
 
     /**
-   * This method is responsible for loging a customer in.
+   * This method is responsible fetching all customers.
    * @param req
    * @param res
    * @param next
    */
     async getAllCustomers(req, res, next) {
-      winston.info('Fetching all todos from the database');
-      const [error, todos] = await to(dbConfig.getDbInstance().Customer.findAll());
+      winston.info('Fetching all customers from the database');
+      const [error, customers] = await to(dbConfig.getDbInstance().Customer.findAll());
       if (error) {
-        winston.error(`Error occurred while fetching all Todos form database, ${error}`);
+        winston.error(`Error occurred while fetching all customers form database, ${error}`);
         next(error);
       } else {
-        winston.info(`[${req.method}][${req.originalUrl}] Todos fetched successfully, total count: ${todos.length}`);
+        winston.info(`[${req.method}][${req.originalUrl}] Customers fetched successfully, total count: ${customers.length}`);
         res.status(200).send({
           success: 1,
           response: 200,
-          message: todos.length ? 'Todos fetched successfully.' : 'No Todos found.',
-          data: todos.length ? todos : [],
+          message: customers.length ? 'Customers fetched successfully.' : 'No Customers found.',
+          data: customers.length ? customers : [],
         });
       }
     },
-  // /**
-  //  * This method is responsible for updating a todo.
-  //  * @param req
-  //  * @param res
-  //  * @param next
-  //  */
-  // async updateTodoById(req, res, next) {
-  //   winston.info(`Updating todo with uuid ${req.params.id}`);
-  //   const [error, todo] = await to(dbConfig.getDbInstance().Todo.findOne({
-  //     attributes: ['id', 'title', 'status', 'createdAt'],
-  //     where: {
-  //       uuid: req.params.id
-  //     }
-  //   }));
-  //   if (error) {
-  //     winston.error(`Error occurred while fetching todo with uuid: ${req.params.id}, ${error}`);
-  //     next(error);
-  //   } else if (todo) {
-  //     winston.info(`Todo todo with uuid ${req.params.id} found successfully`);
-  //     const [errorUpdatedTodo, updatedTodo] = await to(todo.update({
-  //       status: req.body.status
-  //     }));
-  //     if (errorUpdatedTodo) {
-  //       winston.error(`Error occurred while updating Todo with uuid: ${req.params.id}, ${errorUpdatedTodo}`);
-  //       next(error);
-  //     } else {
-  //       winston.info(`Todo with uuid ${req.params.id} updated successfully`);
-  //       // Todo: Use transaction for this, since one is not be complete without the other.
-  //       winston.info(`Marking all subtasks to COMPLETE for todo with uuid ${req.params.id} `);
-  //       const [errorSubTask] = await to(dbConfig.getDbInstance().SubTask.update(
-  //         {
-  //           status: req.body.status === constants.taskStatus.complete ? constants.taskStatus.complete : constants.taskStatus.pending
-  //         }, {
-  //         where: {
-  //           todoId: todo.id
-  //         }
-  //       }
-  //       ));
-  //       if (errorSubTask) {
-  //         winston.error(`Error occurred while updating subtasks for todo with uuid: ${req.params.id}, ${error}`);
-  //       } else {
-  //         winston.info(`Subtasks for todo with uuid ${req.params.id} updated successfully`);
-  //         res.status(200).send({
-  //           success: 1,
-  //           response: 200,
-  //           message: 'Todo updated successfully.',
-  //           data: updatedTodo,
-  //         });
-  //       }
-  //     }
-  //   } else {
-  //     winston.info(`No Todo found with uuid ${req.params.id}`);
-  //     next({
-  //       msgCode: '0001',
-  //       status: 404,
-  //     });
-  //   }
-  // },
-  // /**
-  //  * This method is used to create a new sub task for given todo.
-  //  * @param req
-  //  * @param res
-  //  * @param next
-  //  */
-  // async createSubTask(req, res, next) {
-  //   winston.info(`Creating new subtask for todo with uuid: ${req.params.id}`);
-  //   winston.info(`Fetching todo with uuid: ${req.params.id}`);
-  //   const [error, todo] = await to(dbConfig.getDbInstance().Todo.findOne({
-  //     where: {
-  //       uuid: req.params.id
-  //     }
-  //   }));
-  //   if (error) {
-  //     winston.error(`Error occurred while fetching todo with uuid: ${req.params.id}, ${error}`);
-  //     next(error);
-  //   } else if (todo) {
-  //     winston.info(`Todo with uuid ${req.params.id} found successfully`);
-  //     const subTaskObj = {
-  //       uuid: uuidv4(),
-  //       title: req.body.title,
-  //       todoId: todo.id
-  //     };
-  //     const [errorSubTask, subTask] = await to(dbConfig.getDbInstance().SubTask.create(subTaskObj));
-  //     if (errorSubTask) {
-  //       winston.error(`Error occurred while creating a new subtask, ${errorSubTask}`);
-  //       next(errorSubTask);
-  //     } else {
-  //       winston.info(`[${req.method}][${req.originalUrl}][${subTask.id}] Subtask created successfully`);
-  //       // Todo: Use transaction for this as well, since one is not be complete without the other.
-  //       winston.info(`Updating status for todo with uuid ${req.params.id}`);
-  //       const [errorUpdatedTodo] = await to(todo.update({
-  //         status: constants.taskStatus.pending
-  //       }));
-  //       if (errorUpdatedTodo) {
-  //         winston.error(`Error occurred while updating Todo with uuid: ${req.params.id}, ${errorUpdatedTodo}`);
-  //         next(error);
-  //       } else {
-  //         res.status(200).send({
-  //           success: 1,
-  //           response: 200,
-  //           message: 'SubTask created successfully.',
-  //           data: {
-  //             id: subTask.id,
-  //             uuid: subTask.uuid,
-  //             title: subTask.title,
-  //             status: subTask.status,
-  //             createdAt: subTask.createdAt,
-  //             todoId: subTask.todoId
-  //           },
-  //         });
-  //       }
-  //     }
-  //   } else {
-  //     winston.info(`No Todo found with uuid ${req.params.id}`);
-  //     next({
-  //       msgCode: '0001',
-  //       status: 404,
-  //     });
-  //   }
-  // },
-  // /**
-  //  * This method is responsible for updating a subtask by id.
-  //  * @param req
-  //  * @param res
-  //  * @param next
-  //  */
-  // async updateSubTaskById(req, res, next) {
-  //   winston.info(`Updating subtask with uuid ${req.params.id}`);
-  //   // Todo: Create common method to fetch todo by uuid, since its used in multiple place.
-  //   winston.info(`Fetching todo with uuid: ${req.params.todoId}`);
-  //   const [error, todo] = await to(dbConfig.getDbInstance().Todo.findOne({
-  //     include: [
-  //       {
-  //         model: dbConfig.getDbInstance().SubTask,
-  //         attributes: ['id', 'uuid', 'title', 'status', 'createdAt'],
-  //       },
-  //     ],
-  //     where: {
-  //       uuid: req.params.todoId
-  //     }
-  //   }));
-  //   if (error) {
-  //     winston.error(`Error occurred while fetching todo with uuid: ${req.params.id}, ${error}`);
-  //     next(error);
-  //   } else if (todo) {
-  //     winston.info(`Todo with uuid ${req.params.id} fetched successfully`);
-  //     const [error, subTask] = await to(dbConfig.getDbInstance().SubTask.findOne({
-  //       attributes: ['id', 'uuid', 'title', 'status', 'createdAt'],
-  //       where: { uuid: req.params.id }
-  //     }));
-  //     if (error) {
-  //       winston.error(`Error occurred while fetching subTask with uuid: ${req.params.id}, ${error}`);
-  //       next(error);
-  //     } else if (subTask) {
-  //       winston.info(`SubTask with uuid ${req.params.id} found successfully`);
-  //       const [errorUpdatedSubTask, updatedSubTask] = await to(subTask.update({
-  //         status: req.body.status
-  //       }));
-  //       if (errorUpdatedSubTask) {
-  //         winston.error(`Error occurred while updating subTask with uuid: ${req.params.id}, ${errorUpdatedSubTask}`);
-  //         next(error);
-  //       } else {
-  //         winston.info(`SubTask with uuid ${req.params.id} updated successfully`);
-  //         let todoStatus;
-  //         // Checking if all other subtasks are completed and status of todo is pending then update the todo to complete.
-  //         if (req.body.status === constants.taskStatus.complete &&
-  //           todo.SubTasks.filter(subTask => subTask.id !== updatedSubTask.id).every(subtask => subtask.status === constants.taskStatus.complete) &&
-  //           todo.status === constants.taskStatus.pending) {
-  //           todoStatus = constants.taskStatus.complete;
-  //         } else {
-  //           todoStatus = constants.taskStatus.pending;
-  //         }
-
-  //         // Todo: Use transaction for this as well, since one is not be complete without the other.
-  //         winston.info(`Updating status for todo with uuid ${req.params.id}`);
-  //         const [errorUpdatedTodo, updatedTodo] = await to(todo.update({
-  //           status: todoStatus
-  //         }));
-  //         if (errorUpdatedTodo) {
-  //           winston.error(`Error occurred while updating Todo with uuid: ${req.params.id}, ${errorUpdatedTodo}`);
-  //           next(error);
-  //         } else {
-  //           res.status(200).send({
-  //             success: 1,
-  //             response: 200,
-  //             message: 'SubTask updated successfully.',
-  //             data: { ...updatedSubTask.dataValues, todoId: todo.id },
-  //           });
-  //         }
-  //       }
-  //     } else {
-  //       winston.info(`No SubTask found with uuid ${req.params.id}`);
-  //       next({
-  //         msgCode: '0001',
-  //         status: 404,
-  //       });
-  //     }
-  //   } else {
-  //     winston.info(`No Todo found with uuid ${req.params.id}`);
-  //     next({
-  //       msgCode: '0001',
-  //       status: 404,
-  //     });
-  //   }
-  // },
 }

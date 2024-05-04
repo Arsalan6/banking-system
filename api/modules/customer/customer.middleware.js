@@ -31,17 +31,4 @@ module.exports = {
     check('email', '1006').isEmail(),
     check('password', '1007').exists().isString(),
   ],
-  // validateUpdateTodoParams: [
-  //   param('id', '1005').exists().isUUID(4),
-  //   check('status', '1006').exists(),
-  //   check('status', '1007').isIn(Object.values(constants.taskStatus)),
-  // ],
-  // validateCreateSubTaskParams: [
-  //   param('id', '1005').exists().isUUID(4),
-  //   check('title', '1003').exists(),
-  //   check('title', '1004').isString(),
-  // ],
-  // validateUpdateSubTaskParams: [
-  //   param('todoId', '1008').exists().isUUID(4),
-  // ]
 };

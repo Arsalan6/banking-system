@@ -25,23 +25,4 @@ module.exports = function (app, version) {
     verifyToken,
     customerController.getAllCustomers,
   );
-  // app.patch(
-  //   `${version}${resource}/:id`,
-  //   todoMiddleware.validateUpdateTodoParams,
-  //   errorMiddleware,
-  //   todoController.updateTodoById,
-  // );
-  // app.post(
-  //   `${version}${resource}/:id/sub-task`,
-  //   todoMiddleware.validateCreateSubTaskParams,
-  //   errorMiddleware,
-  //   todoController.createSubTask
-  // );
-  // app.patch(
-  //   `${version}${resource}/:todoId/sub-task/:id`,
-  //   todoMiddleware.validateUpdateSubTaskParams,
-  //   todoMiddleware.validateUpdateTodoParams,
-  //   errorMiddleware,
-  //   todoController.updateSubTaskById,
-  // );
 }
