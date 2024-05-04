@@ -1,0 +1,29 @@
+{
+  "1003": {
+    "msg": "First name is required."
+  },
+  "1004": {
+    "msg": "Last name is required."
+  },
+  "1005": {
+    "msg": "email is required and must be a string."
+  },
+  "1006": {
+    "msg": "Invalid email address."
+  },
+  "1007": {
+    "msg": "Password is required and must be a string."
+  },
+  "1008": {
+    "msg": "Password must be longer than 8 characters, have one Upper case character, one lowercase character, one digit and one special character."
+  },
+  "1009": {
+    "msg": "Phone number is required and must be a valid UK number."
+  },
+  "1010": {
+    "msg": "Email is already registered."
+  },
+  "1011": {
+    "msg": "Email not found."
+  }
+}

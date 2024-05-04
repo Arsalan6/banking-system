@@ -3,6 +3,7 @@ require('dotenv').config();
 
 // Importing npm dependencies
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const http = require('http');
 const cors = require('cors');
@@ -14,6 +15,7 @@ const dbConfig = require('./config/db-config');
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 const app = express();
 const port = process.env.API_SERVER_PORT || 3000;
+app.use(cookieParser());
 
 // Configure database and model entities.
 dbConfig.initialize((err) => {
@@ -29,6 +31,8 @@ dbConfig.initialize((err) => {
     // Parsing request body.
     app.use(express.urlencoded({ extended: true }));
     app.use(express.json());
+
+    require('./config/express')(app);
 
     const onListening = () => {
       winston.info(`Server started on port: '${port}'`);
