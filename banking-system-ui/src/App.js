@@ -5,6 +5,8 @@ import './App.css';
 import Login from "./pages/login";
 import Registration from "./pages/registration";
 import 'react-toastify/dist/ReactToastify.css';
+import Dashboard from "./pages/dashboard";
+import Layout from "./layout/layout";
 
 
 function App() {
@@ -26,9 +28,13 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/registration" element={<Registration />} />
+        <Route path="/dashboard" element={<Layout/>}>
+        <Route
+          path=""
+          element={<Dashboard />}
+        />
+        </Route>
       </Routes>
-
-
     </BrowserRouter>
   );
 }
