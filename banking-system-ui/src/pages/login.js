@@ -6,7 +6,6 @@ import { toast } from 'react-toastify';
 
 import customerService from '../services/customer.service';
 
-
 const loginValidateSchema = Yup.object().shape({
   email: Yup.string().email("Please enter a valid email").required("This field is required"),
   password: Yup.string()
@@ -35,7 +34,6 @@ const Login = () => {
         })
         .catch((error) => {
           setErrors(error)
-          console.log(error);
           toast.error(error.response.data.message);
         })
         .finally(() => {
