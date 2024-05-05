@@ -18,6 +18,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER(100),
       allowNull: false,
     },
+    currentAmount: {
+      type: DataTypes.INTEGER(100),
+      allowNull: false,
+    },
     creditCardIssued: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
