@@ -11,7 +11,7 @@ import { constants } from '../constants/constants';
  */
 async function loginCustomer(customerCredentails) {
     const response = await axios.post(`${constants.API_BASE_URL}/customer/login`, customerCredentails);
-    return response.data.data;
+    return response.data;
 }
 
 /**
@@ -21,7 +21,7 @@ async function loginCustomer(customerCredentails) {
  */
 async function registerCustomer(customerDetailsObj) {
     const response = await axios.post(`${constants.API_BASE_URL}/customer`, customerDetailsObj);
-    return response.data.data;
+    return response.data;
 }
 
 const customerService = {

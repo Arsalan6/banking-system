@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 
 import customerService from '../services/customer.service';
+import { isAuthenticated } from '../config/protectedRoute';
 
 const ukPhoneRegex = /^(((\+44\s?\d{4}|\(?0\d{4}\)?)\s?\d{3}\s?\d{3})|((\+44\s?\d{3}|\(?0\d{3}\)?)\s?\d{3}\s?\d{4})|((\+44\s?\d{2}|\(?0\d{2}\)?)\s?\d{4}\s?\d{4}))(\s?#(\d{4}|\d{3}))?$/;
 
@@ -29,6 +30,11 @@ const registrationValidateSchema = Yup.object().shape({
 
 const Registration = () => {
   const navigate = useNavigate();
+  useEffect(() => {
+    if (isAuthenticated()) {
+      return navigate('/dashboard', { replace: true });
+    }
+  }, [navigate]);
   const [loading, setLoading] = useState(false);
   const formik = useFormik({
     initialValues: {

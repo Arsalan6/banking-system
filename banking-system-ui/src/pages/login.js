@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 
 import customerService from '../services/customer.service';
+import { isAuthenticated } from '../config/protectedRoute';
 
 const loginValidateSchema = Yup.object().shape({
   email: Yup.string().email("Please enter a valid email").required("This field is required"),
@@ -18,6 +19,13 @@ const loginValidateSchema = Yup.object().shape({
 
 const Login = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated()) {
+      return navigate('/dashboard', { replace: true });
+    }
+  }, [navigate]);
+
   const [loading, setLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
@@ -28,7 +36,8 @@ const Login = () => {
     onSubmit: (values, { setErrors }) => {
       setLoading(true);
       customerService.loginCustomer(values)
-        .then(() => {
+        .then((response) => {
+          localStorage.setItem("customerToken", 'Bearer ' + response.token);
           toast.success("Customer logged in successfully");
           navigate('/dashboard');
         })

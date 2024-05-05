@@ -7,6 +7,7 @@ import Registration from "./pages/registration";
 import 'react-toastify/dist/ReactToastify.css';
 import Dashboard from "./pages/dashboard";
 import Layout from "./layout/layout";
+import ProtectedRoute from "./config/protectedRoute";
 
 
 function App() {
@@ -23,17 +24,23 @@ function App() {
         draggable
         pauseOnHover
         theme="dark"
-/>
+      />
 
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/registration" element={<Registration />} />
-        <Route path="/dashboard" element={<Layout/>}>
-        <Route
-          path=""
-          element={<Dashboard />}
-        />
+
+        <Route exact path="/" element={<ProtectedRoute />}>
+          <Route exact path="/" element={<Layout />}>
+            <Route
+              exact
+              path="dashboard"
+              element={<Dashboard />}
+            />
+          </Route>
         </Route>
+
+
       </Routes>
     </BrowserRouter>
   );
