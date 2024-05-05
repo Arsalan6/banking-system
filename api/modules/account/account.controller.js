@@ -50,7 +50,7 @@ module.exports = {
     const [error, customerAccounts] = await to(dbConfig.getDbInstance().Account.findAll({
       attributes: [
         'id', 'name', 'number', 'currentAmount', 'creditCardIssued', 'creditCardIssuedAt', 'debitCardIssued',
-        'debitCardIssuedAt', 'chequeBookIssued', 'chequeBookIssuedAt', 'type'
+        'debitCardIssuedAt', 'chequeBookIssued', 'chequeBookIssuedAt', 'type', 'createdAt'
       ],
       where: {
         customerId: req.customerId,
