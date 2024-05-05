@@ -19,10 +19,9 @@ module.exports = function (app, version) {
     errorMiddleware,
     customerController.loginCustomer,
   );
-  // Todo: remove this!
   app.get(
     `${version}${resource}`,
     verifyToken,
-    customerController.getAllCustomers,
+    customerController.getCustomerDetails,
   );
 }

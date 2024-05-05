@@ -111,24 +111,29 @@ module.exports = {
 
 
     /**
-   * This method is responsible fetching all customers.
+   * This method is responsible fetching customer details.
    * @param req
    * @param res
    * @param next
    */
-    async getAllCustomers(req, res, next) {
-      winston.info('Fetching all customers from the database');
-      const [error, customers] = await to(dbConfig.getDbInstance().Customer.findAll());
+    async getCustomerDetails(req, res, next) {
+      winston.info('Fetching customer details');
+      const [error, customerDetails] = await to(dbConfig.getDbInstance().Customer.findOne({
+        attributes: ['id', 'firstName', 'lastName', 'email'],
+        where: {
+          id: req.customerId,
+        }
+      }));
       if (error) {
-        winston.error(`Error occurred while fetching all customers form database, ${error}`);
+        winston.error(`Error occurred while fetching customer details, ${error}`);
         next(error);
       } else {
-        winston.info(`[${req.method}][${req.originalUrl}] Customers fetched successfully, total count: ${customers.length}`);
+        winston.info(`[${req.method}][${req.originalUrl}] Customer details successfully`);
         res.status(200).send({
           success: 1,
           response: 200,
-          message: customers.length ? 'Customers fetched successfully.' : 'No Customers found.',
-          data: customers.length ? customers : [],
+          message: customerDetails ? 'Customer details fetched successfully.' : 'No Customer found.',
+          data: customerDetails,
         });
       }
     },

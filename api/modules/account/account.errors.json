@@ -1,0 +1,11 @@
+{
+  "2001": {
+    "msg": "Account name is required and must be a string."
+  },
+  "2002": {
+    "msg": "Account type is required and must be a string."
+  },
+  "2003": {
+    "msg": "Valid account types are ['Personal', 'Business']."
+  }
+}

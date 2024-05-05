@@ -34,10 +34,10 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: true,
     paranoid: true
   });
-  // Customer.associate = (models) => {
-  //   Customer.hasMany(models.Account, {
-  //     foreignKey: 'customerId',
-  //   });
-  // };
+  Customer.associate = (models) => {
+    Customer.hasMany(models.Account, {
+      foreignKey: 'customerId',
+    });
+  };
   return Customer;
 };
