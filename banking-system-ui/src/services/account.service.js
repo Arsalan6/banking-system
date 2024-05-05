@@ -14,8 +14,18 @@ async function createAccount(accountObj) {
     return response.data;
 }
 
+/**
+ * Fetches all accounts for logged in customer
+ * @returns response
+ */
+async function getAllAccounts(accountObj) {
+    const response = await axios.get(`${constants.API_BASE_URL}/account`, { headers: {"Authorization" : localStorage.getItem("customerToken")} });
+    return response.data;
+}
+
 const accountService = {
     createAccount,
+    getAllAccounts,
 };
 
 export default accountService;
