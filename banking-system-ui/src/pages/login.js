@@ -37,7 +37,7 @@ const Login = () => {
       setLoading(true);
       customerService.loginCustomer(values)
         .then((response) => {
-          localStorage.setItem("customerToken", 'Bearer ' + response.token);
+          localStorage.setItem("customerToken", response.token);
           toast.success("Customer logged in successfully");
           navigate('/dashboard');
         })

@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Dashboard from "./pages/dashboard";
 import Layout from "./layout/layout";
 import ProtectedRoute from "./config/protectedRoute";
+import NewAccount from "./pages/new-account";
 
 
 function App() {
@@ -36,6 +37,11 @@ function App() {
               exact
               path="dashboard"
               element={<Dashboard />}
+            />
+            <Route
+              exact
+              path="new-account"
+              element={<NewAccount />}
             />
           </Route>
         </Route>

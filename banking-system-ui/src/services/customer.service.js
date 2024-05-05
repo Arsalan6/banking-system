@@ -24,9 +24,20 @@ async function registerCustomer(customerDetailsObj) {
     return response.data;
 }
 
+/**
+ * Fetches logged in customer details
+ * @param customerDetailsObj
+ * @returns response
+ */
+async function getCustomerDetails() {
+    const response = await axios.get(`${constants.API_BASE_URL}/customer`, { headers: {"Authorization" : localStorage.getItem("customerToken")} });
+    return response.data;
+}
+
 const customerService = {
     loginCustomer,
     registerCustomer,
+    getCustomerDetails,
 };
 
 export default customerService;

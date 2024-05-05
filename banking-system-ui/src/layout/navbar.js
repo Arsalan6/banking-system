@@ -1,6 +1,13 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
+  const navigate = useNavigate();
+
+  const handleNewAccount = () => {
+    navigate('/new-account', {replace: true});
+    navigate(0);
+  };
 
   return (
     <nav class="fixed z-30 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
@@ -15,9 +22,16 @@ const Navbar = () => {
               <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Banking System</span>
             </div>
           </div>
-          <div class="flex items-center">
-            <div class="flex items-center ml-3">
-              <button className='text-white py-2'>Sign out</button>
+          <div className='flex'>
+            {!window.location.href.includes('new-account') ? (
+              <button onClick={handleNewAccount} id="createProductButton" class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800" type="button" data-drawer-target="drawer-create-product-default" data-drawer-show="drawer-create-product-default" aria-controls="drawer-create-product-default" data-drawer-placement="right">
+                Open new Account
+              </button>
+            ) : null}
+            <div class="flex items-center">
+              <div class="flex items-center ml-3">
+                <button className='text-white py-2'>Sign out</button>
+              </div>
             </div>
           </div>
         </div>
