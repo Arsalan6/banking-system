@@ -14,4 +14,10 @@ module.exports = function (app, version) {
     errorMiddleware,
     accountController.createAccount,
   );
+  app.get(
+    `${version}${resource}`,
+    verifyToken,
+    errorMiddleware,
+    accountController.getAllCustomerAccounts,
+  );
 }

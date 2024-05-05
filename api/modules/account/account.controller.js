@@ -39,4 +39,34 @@ module.exports = {
       });
     }
   },
+  /**
+  * This method is used for fetching all accounts for the logged in customer.
+  * @param req
+  * @param res
+  * @param next
+  */
+  async getAllCustomerAccounts(req, res, next) {
+    winston.info(`Fetching all accounts for customer with id: ${JSON.stringify(req.userId)}`);
+    const [error, customerAccounts] = await to(dbConfig.getDbInstance().Account.findAll({
+      attributes: [
+        'id', 'name', 'number', 'currentAmount', 'creditCardIssued', 'creditCardIssuedAt', 'debitCardIssued',
+        'debitCardIssuedAt', 'chequeBookIssued', 'chequeBookIssuedAt', 'type'
+      ],
+      where: {
+        customerId: req.customerId,
+      }
+    }));
+    if (error) {
+      winston.error(`Error occurred while fetching customer accounts, ${error}`);
+      next(error);
+    } else {
+      winston.info(`[${req.method}][${req.originalUrl}] Accounts fetched successfully`);
+      res.status(200).send({
+        success: 1,
+        response: 200,
+        message: customerAccounts.length ? 'Accounts fetched successfully.' : 'No Accounts found.',
+        data: customerAccounts.length ? customerAccounts : [],
+      });
+    }
+  },
 }
