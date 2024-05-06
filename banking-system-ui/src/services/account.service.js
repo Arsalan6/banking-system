@@ -23,9 +23,19 @@ async function getAllAccounts(accountObj) {
     return response.data;
 }
 
+/**
+ * Delets account by uuid
+ * @returns response
+ */
+async function deleteAccByUuid(accountUuid) {
+    const response = await axios.delete(`${constants.API_BASE_URL}/account/${accountUuid}`, { headers: {"Authorization" : localStorage.getItem("customerToken")} });
+    return response.data;
+}
+
 const accountService = {
     createAccount,
     getAllAccounts,
+    deleteAccByUuid,
 };
 
 export default accountService;
