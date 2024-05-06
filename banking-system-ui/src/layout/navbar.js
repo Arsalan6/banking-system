@@ -9,6 +9,11 @@ const Navbar = () => {
     navigate(0);
   };
 
+  const handleSignout = () => {
+    localStorage.removeItem("customerToken");
+    navigate(0);
+  };
+
   return (
     <nav class="fixed z-30 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
       <div class="px-3 py-3 lg:px-5 lg:pl-3">
@@ -30,7 +35,7 @@ const Navbar = () => {
             ) : null}
             <div class="flex items-center">
               <div class="flex items-center ml-3">
-                <button className='text-white py-2'>Sign out</button>
+                <button onClick={() => handleSignout()} className='text-white py-2'>Sign out</button>
               </div>
             </div>
           </div>
