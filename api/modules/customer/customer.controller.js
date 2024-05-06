@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken');
 // Importing app dependencies
 const winston = require('../../config/winston');
 const dbConfig = require('../../config/db-config');
+const { sendResetPasswordMail } = require('../../config/mailgun');
 
 module.exports = {
   /**
@@ -40,7 +41,7 @@ module.exports = {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         email: req.body.email,
-        phoneNumber: req.body.phone,
+        phoneNumber: req.body.phoneNumber,
       };
 
       const hashedPassword = await bcrypt.hash(req.body.password, 15);
@@ -224,4 +225,92 @@ module.exports = {
       }
     }
   },
+  /**
+   * This method is responsible sending reset password email.
+   * @param req
+   * @param res
+   * @param next
+   */
+  async sendResetPasswordEmail(req, res, next) {
+    winston.info('Sending reset password email');
+    const [errorCustomer, customer] = await to(dbConfig.getDbInstance().Customer.findOne({
+      where: {
+        email: req.body.email,
+      }
+    }));
+    if (errorCustomer) {
+      winston.error(`Error occurred while fetching customer with email: ${req.body.email}, ${error}`);
+      next(error);
+    } else if (!customer) {
+      winston.error(`Customer with email ${req.body.email} not found.`);
+      next({
+        msgCode: '1011',
+        status: 404,
+      });
+    } else {
+      winston.info(`Customer with email: ${req.body.email} fetched successfully`);
+      const [errorResetEmail, resetEmail] = await to(sendResetPasswordMail(customer.email, customer.uuid));
+      if (errorResetEmail) {
+        winston.error(`Error occurred while sending reset password email, ${errorResetEmail}`);
+        next(errorResetEmail);
+      } else {
+        console.log(resetEmail);
+        winston.info(`Reset password email sent successfully`);
+        res.status(200).send({
+          success: 1,
+          response: 200,
+          message: 'Reset password email sent successfully.',
+          data: {},
+        });
+      }
+    }
+  },
+  /**
+   * This method is responsible for resetting customer password using uuid.
+   * @param req
+   * @param res
+   * @param next
+   */
+    async resetCustomerPassword(req, res, next) {
+      winston.info('Updating customer password');
+      winston.info('Authenticating customer password');
+      const [errorCustomer, customer] = await to(dbConfig.getDbInstance().Customer.findOne({
+        where: {
+          uuid: req.params.id,
+        }
+      }));
+      if (errorCustomer) {
+        winston.error(`Error occurred while fetching customer with uuid: ${req.params.id}, ${error}`);
+        next(error);
+      } else if (!customer) {
+        winston.error(`Customer with uuid ${req.params.id} not found.`);
+        next({
+          msgCode: '1011',
+          status: 404,
+        });
+      } else {
+        winston.info(`Customer with uuid: ${req.params.id} fetched successfully`);
+        const hashedPassword = await bcrypt.hash(req.body.newPassword, 15);
+        const [error] = await to(dbConfig.getDbInstance().Customer.update(
+          { password: hashedPassword },
+          {
+            where: {
+              uuid: req.params.id,
+            }
+          }
+        ));
+        if (error) {
+          winston.error(`Error occurred while updating customer password, ${error}`);
+          next(error);
+        } else {
+          winston.info(`[${req.method}][${req.originalUrl}] Customer password reset successfully`);
+          res.status(200).send({
+            success: 1,
+            response: 200,
+            message: 'Customer password reset successfully.',
+            data: {},
+          });
+        }
+      }
+    },
 }

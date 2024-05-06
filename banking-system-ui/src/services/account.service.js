@@ -10,7 +10,7 @@ import { constants } from '../constants/constants';
  * @returns response
  */
 async function createAccount(accountObj) {
-    const response = await axios.post(`${constants.API_BASE_URL}/account`, accountObj, { headers: {"Authorization" : localStorage.getItem("customerToken")} });
+    const response = await axios.post(`${constants.API_BASE_URL}/account`, accountObj, { headers: { "Authorization": localStorage.getItem("customerToken") } });
     return response.data;
 }
 
@@ -18,8 +18,8 @@ async function createAccount(accountObj) {
  * Fetches all accounts for logged in customer
  * @returns response
  */
-async function getAllAccounts(accountObj) {
-    const response = await axios.get(`${constants.API_BASE_URL}/account`, { headers: {"Authorization" : localStorage.getItem("customerToken")} });
+async function getAllAccounts() {
+    const response = await axios.get(`${constants.API_BASE_URL}/account`, { headers: { "Authorization": localStorage.getItem("customerToken") } });
     return response.data;
 }
 
@@ -28,7 +28,7 @@ async function getAllAccounts(accountObj) {
  * @returns response
  */
 async function deleteAccByUuid(accountUuid) {
-    const response = await axios.delete(`${constants.API_BASE_URL}/account/${accountUuid}`, { headers: {"Authorization" : localStorage.getItem("customerToken")} });
+    const response = await axios.delete(`${constants.API_BASE_URL}/account/${accountUuid}`, { headers: { "Authorization": localStorage.getItem("customerToken") } });
     return response.data;
 }
 

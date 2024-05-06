@@ -10,6 +10,8 @@ import Layout from "./layout/layout";
 import ProtectedRoute from "./config/protectedRoute";
 import NewAccount from "./pages/new-account";
 import EditProfilePage from "./pages/edit-profile";
+import ForgotPassword from "./pages/forgot-password";
+import ResetPassword from "./pages/reset-password";
 
 
 function App() {
@@ -31,6 +33,15 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/registration" element={<Registration />} />
+        <Route
+            exact
+            path="forgot-password"
+            element={<ForgotPassword />}
+          />
+          <Route
+            path="reset-password"
+            element={<ResetPassword />}
+          />
 
         <Route exact path="/" element={<ProtectedRoute />}>
           <Route exact path="/" element={<Layout />}>

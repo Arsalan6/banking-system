@@ -36,4 +36,14 @@ module.exports = function (app, version) {
     customerMiddleware.validateUpdateCustomerPasswordParams,
     customerController.updateCustomerPassword,
   );
+  app.post(
+    `${version}${resource}/reset-password`,
+    customerMiddleware.validateResetPasswordParams,
+    customerController.sendResetPasswordEmail,
+  );
+  app.patch(
+    `${version}${resource}/update-password/:id`,
+    customerMiddleware.validateUpdatePasswordParams,
+    customerController.resetCustomerPassword,
+  );
 }

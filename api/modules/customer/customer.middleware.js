@@ -66,4 +66,25 @@ module.exports = {
       pointsForContainingSymbol: 10,
     }),
   ],
+  validateResetPasswordParams: [
+    check('email', '1005').exists().isString(),
+    check('email', '1006').isEmail(),
+  ],
+  validateUpdatePasswordParams: [
+    param('id', '2004').exists().isUUID(4),
+    check('newPassword', '1008').exists().isStrongPassword({
+      minLength: 8,
+      minLowercase: 1,
+      minUppercase: 1,
+      minNumbers: 1,
+      minSymbols: 1,
+      returnScore: false,
+      pointsPerUnique: 1,
+      pointsPerRepeat: 0.5,
+      pointsForContainingLower: 10,
+      pointsForContainingUpper: 10,
+      pointsForContainingNumber: 10,
+      pointsForContainingSymbol: 10,
+    }),
+  ],
 };

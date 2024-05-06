@@ -1,8 +1,6 @@
 // Importing npm dependencies
 const { v4: uuidv4 } = require('uuid');
-const { to } = require('await-to-js')
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const { to } = require('await-to-js');
 
 // Importing app dependencies
 const winston = require('../../config/winston');
@@ -24,6 +22,7 @@ module.exports = {
       type: req.body.accountType,
       number: Math.floor(10000000 + Math.random() * 90000000), // Generating 8 digits random number.
       customerId: req.customerId,
+      currentAmount: 0,
     };
     const [errorCreatedAccount, createdAccount] = await to(dbConfig.getDbInstance().Account.create(accountObj));
     if (errorCreatedAccount) {

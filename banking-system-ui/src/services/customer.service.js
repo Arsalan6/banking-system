@@ -54,12 +54,32 @@ async function updateCustomerPassword(customerPasswordObj) {
     return response.data;
 }
 
+/**
+ * Sends reset password email
+ * @returns response
+ */
+async function sendResetPasswordEmail(customerObj) {
+    const response = await axios.post(`${constants.API_BASE_URL}/customer/reset-password`, customerObj);
+    return response.data;
+}
+
+/**
+ * Sends reset password email
+ * @returns response
+ */
+async function resetPassword(customerObj) {
+    const response = await axios.patch(`${constants.API_BASE_URL}/customer/update-password/${customerObj.id}`, customerObj);
+    return response.data;
+}
+
 const customerService = {
     loginCustomer,
     registerCustomer,
     getCustomerDetails,
     updateCustomerDetails,
     updateCustomerPassword,
+    sendResetPasswordEmail,
+    resetPassword,
 };
 
 export default customerService;
