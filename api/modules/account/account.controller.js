@@ -49,7 +49,7 @@ module.exports = {
     winston.info(`Fetching all accounts for customer with id: ${JSON.stringify(req.userId)}`);
     const [error, customerAccounts] = await to(dbConfig.getDbInstance().Account.findAll({
       attributes: [
-        'id', 'name', 'number', 'currentAmount', 'creditCardIssued', 'creditCardIssuedAt', 'debitCardIssued',
+        'id', 'uuid', 'name', 'number', 'currentAmount', 'creditCardIssued', 'creditCardIssuedAt', 'debitCardIssued',
         'debitCardIssuedAt', 'chequeBookIssued', 'chequeBookIssuedAt', 'type', 'createdAt'
       ],
       where: {
@@ -66,6 +66,40 @@ module.exports = {
         response: 200,
         message: customerAccounts.length ? 'Accounts fetched successfully.' : 'No Accounts found.',
         data: customerAccounts.length ? customerAccounts : [],
+      });
+    }
+  },
+  /**
+  * This method is responsible for deleting a account by its uuid.
+  * @param req
+  * @param res
+  * @param next
+  */
+  async deleteAccountById(req, res, next) {
+    winston.info(`Deleting account with uuid: ${JSON.stringify(req.params.id)}`);
+    const [error, deletedAccount] = await to(dbConfig.getDbInstance().Account.destroy({
+      where: {
+        uuid: req.params.id,
+      }
+    }));
+    if (error) {
+      winston.error(`Error occurred while deleting account, ${error}`);
+      next(error);
+    } else if (!deletedAccount) {
+      winston.info(`Account with uuid: ${JSON.stringify(req.params.id)} not found`);
+      res.status(404).send({
+        success: 1,
+        response: 200,
+        message: 'Account not found.',
+        data: {},
+      });
+    } else {
+      winston.info(`[${req.method}][${req.originalUrl}] Account deleted successfully`);
+      res.status(200).send({
+        success: 1,
+        response: 200,
+        message: 'Account deleted successfully.',
+        data: {},
       });
     }
   },

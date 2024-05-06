@@ -20,4 +20,11 @@ module.exports = function (app, version) {
     errorMiddleware,
     accountController.getAllCustomerAccounts,
   );
+  app.delete(
+    `${version}${resource}/:id`,
+    verifyToken,
+    accountMiddleware.validateDeleteAccountParams,
+    errorMiddleware,
+    accountController.deleteAccountById,
+  );
 }

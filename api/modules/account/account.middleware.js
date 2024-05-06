@@ -10,4 +10,7 @@ module.exports = {
     check('accountType', '2002').exists().isString(),
     check('accountType', '2003').isIn(Object.values(constants.accountType)),
   ],
+  validateDeleteAccountParams: [
+    param('id', '2004').exists().isUUID(4),
+  ],
 };
