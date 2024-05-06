@@ -38,7 +38,6 @@ const NewAccountPage = () => {
     validationSchema: createAccountValidationSchema,
     validateOnBlur: true,
     onSubmit: (values, { setErrors }) => {
-      console.log(values);
       setLoading(true);
       accountService.createAccount(values)
         .then(() => {
