@@ -9,6 +9,7 @@ import Dashboard from "./pages/dashboard";
 import Layout from "./layout/layout";
 import ProtectedRoute from "./config/protectedRoute";
 import NewAccount from "./pages/new-account";
+import EditProfilePage from "./pages/edit-profile";
 
 
 function App() {
@@ -42,6 +43,11 @@ function App() {
               exact
               path="new-account"
               element={<NewAccount />}
+            />
+            <Route
+              exact
+              path="edit-profile"
+              element={<EditProfilePage />}
             />
           </Route>
         </Route>
