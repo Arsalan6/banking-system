@@ -24,4 +24,10 @@ module.exports = function (app, version) {
     verifyToken,
     customerController.getCustomerDetails,
   );
+  app.patch(
+    `${version}${resource}`,
+    verifyToken,
+    customerMiddleware.validateUpdateCustomerParams,
+    customerController.updateCustomerProfile,
+  );
 }

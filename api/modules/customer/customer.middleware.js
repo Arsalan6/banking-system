@@ -31,4 +31,9 @@ module.exports = {
     check('email', '1006').isEmail(),
     check('password', '1007').exists().isString(),
   ],
+  validateUpdateCustomerParams: [
+    check('firstName', '1003').exists().isString(),
+    check('lastName', '1003').exists().isString(),
+    check('phoneNumber', '1009').isMobilePhone("en-GB"),
+  ],
 };

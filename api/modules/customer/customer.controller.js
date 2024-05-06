@@ -41,11 +41,11 @@ module.exports = {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         email: req.body.email,
-        phone: req.body.phone,
+        phoneNumber: req.body.phone,
       };
-  
+
       const hashedPassword = await bcrypt.hash(req.body.password, 15);
-      const [errorCreatedUser, createdUser] = await to(dbConfig.getDbInstance().Customer.create({...userObj, password: hashedPassword}));
+      const [errorCreatedUser, createdUser] = await to(dbConfig.getDbInstance().Customer.create({ ...userObj, password: hashedPassword }));
       if (errorCreatedUser) {
         winston.error(`Error occurred while registering new customer, ${errorCreatedUser}`);
         next(errorCreatedUser);
@@ -55,7 +55,7 @@ module.exports = {
           success: 1,
           response: 200,
           message: 'Customer registered successfully.',
-          data: { },
+          data: {},
         });
       }
     }
@@ -94,11 +94,11 @@ module.exports = {
           message: 'Incorrect password or email',
           data: {},
         });
-        }
+      }
 
       const token = jwt.sign({ customerId: customer.id }, process.env.SECRET_KEY, {
         expiresIn: '24h',
-        });
+      });
       res.cookie('token', token, { httpOnly: true });
       res.status(200).send({
         success: 1,
@@ -108,33 +108,65 @@ module.exports = {
       });
     }
   },
-
-
-    /**
+  /**
    * This method is responsible fetching customer details.
    * @param req
    * @param res
    * @param next
    */
-    async getCustomerDetails(req, res, next) {
-      winston.info('Fetching customer details');
-      const [error, customerDetails] = await to(dbConfig.getDbInstance().Customer.findOne({
-        attributes: ['id', 'firstName', 'lastName', 'email'],
+  async getCustomerDetails(req, res, next) {
+    winston.info('Fetching customer details');
+    const [error, customerDetails] = await to(dbConfig.getDbInstance().Customer.findOne({
+      attributes: ['id', 'firstName', 'lastName', 'email', 'phoneNumber'],
+      where: {
+        id: req.customerId,
+      }
+    }));
+    if (error) {
+      winston.error(`Error occurred while fetching customer details, ${error}`);
+      next(error);
+    } else {
+      winston.info(`[${req.method}][${req.originalUrl}] Customer details fetched successfully`);
+      res.status(200).send({
+        success: 1,
+        response: 200,
+        message: customerDetails ? 'Customer details fetched successfully.' : 'No Customer found.',
+        data: customerDetails,
+      });
+    }
+  },
+  /**
+   * This method is responsible updating customer details.
+   * @param req
+   * @param res
+   * @param next
+   */
+  async updateCustomerProfile(req, res, next) {
+    winston.info('Updating customer details');
+    console.log(req.body.phoneNumber);
+    const [error, updatedCustomer] = await to(dbConfig.getDbInstance().Customer.update(
+      {
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        phoneNumber: req.body.phoneNumber,
+      },
+      {
         where: {
           id: req.customerId,
         }
-      }));
-      if (error) {
-        winston.error(`Error occurred while fetching customer details, ${error}`);
-        next(error);
-      } else {
-        winston.info(`[${req.method}][${req.originalUrl}] Customer details successfully`);
-        res.status(200).send({
-          success: 1,
-          response: 200,
-          message: customerDetails ? 'Customer details fetched successfully.' : 'No Customer found.',
-          data: customerDetails,
-        });
       }
-    },
+    ));
+    if (error) {
+      winston.error(`Error occurred while updating customer details, ${error}`);
+      next(error);
+    } else {
+      winston.info(`[${req.method}][${req.originalUrl}] Customer details updated successfully`);
+      res.status(200).send({
+        success: 1,
+        response: 200,
+        message: updatedCustomer ? 'Customer details updated successfully.' : 'No Customer found.',
+        data: updatedCustomer,
+      });
+    }
+  },
 }
