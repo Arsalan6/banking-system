@@ -25,5 +25,11 @@
   },
   "1011": {
     "msg": "Email not found."
+  },
+  "1012": {
+    "msg": "Current password must be longer than 8 characters, have one Upper case character, one lowercase character, one digit and one special character."
+  },
+  "1013": {
+    "msg": "Updated password must be longer than 8 characters, have one Upper case character, one lowercase character, one digit and one special character."
   }
 }

@@ -30,4 +30,10 @@ module.exports = function (app, version) {
     customerMiddleware.validateUpdateCustomerParams,
     customerController.updateCustomerProfile,
   );
+  app.patch(
+    `${version}${resource}/password`,
+    verifyToken,
+    customerMiddleware.validateUpdateCustomerPasswordParams,
+    customerController.updateCustomerPassword,
+  );
 }

@@ -7,7 +7,6 @@ const jwt = require('jsonwebtoken');
 // Importing app dependencies
 const winston = require('../../config/winston');
 const dbConfig = require('../../config/db-config');
-const constants = require('../../config/constants');
 
 module.exports = {
   /**
@@ -143,7 +142,6 @@ module.exports = {
    */
   async updateCustomerProfile(req, res, next) {
     winston.info('Updating customer details');
-    console.log(req.body.phoneNumber);
     const [error, updatedCustomer] = await to(dbConfig.getDbInstance().Customer.update(
       {
         firstName: req.body.firstName,
@@ -167,6 +165,63 @@ module.exports = {
         message: updatedCustomer ? 'Customer details updated successfully.' : 'No Customer found.',
         data: updatedCustomer,
       });
+    }
+  },
+  /**
+   * This method is responsible updating customer password.
+   * @param req
+   * @param res
+   * @param next
+   */
+  async updateCustomerPassword(req, res, next) {
+    winston.info('Updating customer password');
+    winston.info('Authenticating customer password');
+    const [errorCustomer, customer] = await to(dbConfig.getDbInstance().Customer.findOne({
+      where: {
+        id: req.customerId,
+      }
+    }));
+    if (errorCustomer) {
+      winston.error(`Error occurred while fetching customer with id: ${req.customerId}, ${error}`);
+      next(error);
+    } else if (!customer) {
+      winston.error(`Customer with id ${req.customerId} not found.`);
+      next({
+        msgCode: '1011',
+        status: 404,
+      });
+    } else {
+      winston.info(`Customer with id: ${req.customerId} fetched successfully`);
+      const passwordMatch = await bcrypt.compare(req.body.currentPassword, customer.password);
+      if (!passwordMatch) {
+        return res.status(402).send({
+          success: 1,
+          response: 200,
+          message: 'Incorrect password',
+          data: {},
+        });
+      }
+      const hashedPassword = await bcrypt.hash(req.body.newPassword, 15);
+      const [error] = await to(dbConfig.getDbInstance().Customer.update(
+        { password: hashedPassword },
+        {
+          where: {
+            id: req.customerId,
+          }
+        }
+      ));
+      if (error) {
+        winston.error(`Error occurred while updating customer password, ${error}`);
+        next(error);
+      } else {
+        winston.info(`[${req.method}][${req.originalUrl}] Customer password updated successfully`);
+        res.status(200).send({
+          success: 1,
+          response: 200,
+          message: 'Customer password updated successfully.',
+          data: {},
+        });
+      }
     }
   },
 }
