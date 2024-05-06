@@ -1,0 +1,11 @@
+{
+  "3001": {
+    "msg": "Account id is required and must be a string."
+  },
+  "3002": {
+    "msg": "Transcation type is required and be ['DEBIT', 'CREDIT']."
+  },
+  "3003": {
+    "msg": "Transcation amount is required and must be a number"
+  }
+}
