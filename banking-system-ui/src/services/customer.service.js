@@ -30,7 +30,17 @@ async function registerCustomer(customerDetailsObj) {
  * @returns response
  */
 async function getCustomerDetails() {
-    const response = await axios.get(`${constants.API_BASE_URL}/customer`, { headers: {"Authorization" : localStorage.getItem("customerToken")} });
+    const response = await axios.get(`${constants.API_BASE_URL}/customer`, { headers: { "Authorization": localStorage.getItem("customerToken") } });
+    return response.data;
+}
+
+/**
+ * Updates logged in customer details
+ * @param customerDetailsObj
+ * @returns response
+ */
+async function updateCustomerDetails(customerDetailsObj) {
+    const response = await axios.patch(`${constants.API_BASE_URL}/customer`, customerDetailsObj, { headers: { "Authorization": localStorage.getItem("customerToken") } });
     return response.data;
 }
 
@@ -38,6 +48,7 @@ const customerService = {
     loginCustomer,
     registerCustomer,
     getCustomerDetails,
+    updateCustomerDetails,
 };
 
 export default customerService;
