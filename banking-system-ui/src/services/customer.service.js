@@ -44,11 +44,22 @@ async function updateCustomerDetails(customerDetailsObj) {
     return response.data;
 }
 
+/**
+ * Updates logged in customer password
+ * @param customerPasswordObj
+ * @returns response
+ */
+async function updateCustomerPassword(customerPasswordObj) {
+    const response = await axios.patch(`${constants.API_BASE_URL}/customer/password`, customerPasswordObj, { headers: { "Authorization": localStorage.getItem("customerToken") } });
+    return response.data;
+}
+
 const customerService = {
     loginCustomer,
     registerCustomer,
     getCustomerDetails,
     updateCustomerDetails,
+    updateCustomerPassword,
 };
 
 export default customerService;

@@ -85,6 +85,17 @@ const EditProfilePage = () => {
     validationSchema: updatePasswordValidationSchema,
     validateOnBlur: true,
     onSubmit: (values) => {
+      setCustomerPasswordLoading(true);
+      customerService.updateCustomerPassword((values))
+        .then(() => {
+          toast.success("Customer password updated successfully.");
+        })
+        .catch((error) => {
+          toast.error(error.response.data.message);
+        })
+        .finally(() => {
+          setCustomerPasswordLoading(false);
+        });
     },
   });
 
