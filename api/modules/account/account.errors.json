@@ -10,5 +10,8 @@
   },
   "2004": {
     "msg": "Id must be a valid UUID."
-  }
+  },
+  "2005": {
+    "msg": "Account number must be a 8 digit number."
+  }  
 }

@@ -126,4 +126,94 @@ module.exports = {
       }
     }
   },
+  /**
+   * This method is used to transfer funds from one account to another.
+   * @param req
+   * @param res
+   * @param next
+   */
+  async transferFunds(req, res, next) {
+    const { recipientId, donorId, transactionAmount } = req.body;
+    winston.info(`Transfering amount from user with id: ${JSON.stringify(donorId)} to account ${recipientId}`);
+    winston.info(`Fetching account with uuid: ${recipientId}`);
+    const [error, fetchedAccounts] = await to(dbConfig.getDbInstance().Account.findAll({
+      where: {
+        uuid: [recipientId, donorId],
+      },
+      include: {
+        model: dbConfig.getDbInstance().Customer,
+      }
+    }));
+    if (error) {
+      winston.error(`Error occurred while fetching customer account, ${error}`);
+      next(error);
+    } else if (fetchedAccounts.length != 2) {
+      winston.info(`Account not found`);
+      res.status(404).send({
+        success: 1,
+        response: 200,
+        message: 'Account not found.',
+        data: {},
+      });
+    } else {
+      const transactionObjArr = [
+        {
+          uuid: uuidv4(),
+          type: constants.transactionType.debit,
+          amount: transactionAmount,
+          accountId: fetchedAccounts.find((acc) => acc.uuid === donorId).id,
+        },
+        {
+          uuid: uuidv4(),
+          type: constants.transactionType.credit,
+          amount: transactionAmount,
+          accountId: fetchedAccounts.find((acc) => acc.uuid === recipientId).id,
+        }
+      ];
+      const [errorCreateTranscation] = await to(dbConfig.getDbInstance().Transaction.bulkCreate(transactionObjArr));
+      if (errorCreateTranscation) {
+        winston.error(`Error occurred while creating transcations, ${errorCreateTranscation}`);
+        next(errorCreateTranscation);
+      } else {
+        winston.info(`Transcation created successfully`);
+        winston.info(`Updating total amount in customers account table.`);
+        const donorTotalAmount = fetchedAccounts.find((acc) => acc.uuid === donorId).currentAmount - transactionAmount;
+        const [errorUpdatingDonorTotalAmount] = await to(dbConfig.getDbInstance().Account.update(
+          { currentAmount: donorTotalAmount },
+          {
+            where: {
+              id: fetchedAccounts.find((acc) => acc.uuid === donorId).id,
+            }
+          }
+        ));
+        if (errorUpdatingDonorTotalAmount) {
+          winston.error(`Error occurred while updating total amount for donor account, ${errorUpdatingDonorTotalAmount}`);
+          next(errorUpdatingDonorTotalAmount);
+        } else {
+          winston.info(`Total amount for donor account updated successfully.`);
+          const recipientTotalAmount = fetchedAccounts.find((acc) => acc.uuid === recipientId).currentAmount + transactionAmount;
+          const [errorUpdatingRecipientTotalAmount] = await to(dbConfig.getDbInstance().Account.update(
+            { currentAmount: recipientTotalAmount },
+            {
+              where: {
+                id: fetchedAccounts.find((acc) => acc.uuid === recipientId).id,
+              }
+            }
+          ));
+          if (errorUpdatingRecipientTotalAmount) {
+            winston.error(`Error occurred while updating total amount for recipient account, ${errorUpdatingRecipientTotalAmount}`);
+            next(errorUpdatingRecipientTotalAmount);
+          } else {
+            winston.info(`Total amount for recipient account updated successfully.`);
+            res.status(200).send({
+              success: 1,
+              response: 200,
+              message: 'Amount transferred successfully.',
+              data: fetchedAccounts,
+            });
+          }
+        }
+      }
+    }
+  },
 }

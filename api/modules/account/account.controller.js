@@ -69,11 +69,11 @@ module.exports = {
     }
   },
   /**
-  * This method is responsible for deleting a account by its uuid.
-  * @param req
-  * @param res
-  * @param next
-  */
+    * This method is responsible for deleting a account by its uuid.
+    * @param req
+    * @param res
+    * @param next
+    */
   async deleteAccountById(req, res, next) {
     winston.info(`Deleting account with uuid: ${JSON.stringify(req.params.id)}`);
     const [error, deletedAccount] = await to(dbConfig.getDbInstance().Account.destroy({
@@ -99,6 +99,44 @@ module.exports = {
         response: 200,
         message: 'Account deleted successfully.',
         data: {},
+      });
+    }
+  },
+  /**
+  * This method is responsible for fetching a account by its number.
+  * @param req
+  * @param res
+  * @param next
+  */
+  async getAccountByNumber(req, res, next) {
+    winston.info(`Fetching account with uuid: ${JSON.stringify(req.params.accountNumber)}`);
+    const [error, fetchedAccount] = await to(dbConfig.getDbInstance().Account.findOne({
+      where: {
+        number: req.params.accountNumber,
+      },
+      include: {
+        model: dbConfig.getDbInstance().Customer,
+        attributes: ['firstName', 'lastName', 'phoneNumber'],
+      },
+    }));
+    if (error) {
+      winston.error(`Error occurred while fetching account, ${error}`);
+      next(error);
+    } else if (!fetchedAccount) {
+      winston.info(`Account with uuid: ${JSON.stringify(req.params.accountNumber)} not found`);
+      res.status(404).send({
+        success: 1,
+        response: 200,
+        message: 'Account not found.',
+        data: {},
+      });
+    } else {
+      winston.info(`[${req.method}][${req.originalUrl}] Account fetched successfully`);
+      res.status(200).send({
+        success: 1,
+        response: 200,
+        message: 'Account fetched successfully.',
+        data: fetchedAccount,
       });
     }
   },

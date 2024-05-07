@@ -20,4 +20,11 @@ module.exports = function (app, version) {
     errorMiddleware,
     transcationController.getAllTransactions,
   );
+  app.post(
+    `${version}${resource}/transfer`,
+    verifyToken,
+    transcationMiddleware.validateTransferFundsParams,
+    errorMiddleware,
+    transcationController.transferFunds,
+  );
 }

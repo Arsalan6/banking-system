@@ -11,6 +11,6 @@ module.exports = {
     check('accountType', '2003').isIn(Object.values(constants.accountType)),
   ],
   validateDeleteAccountParams: [
-    param('id', '2004').exists().isUUID(4),
+    param('accountNumber', '2004').isLength({ min: 8, max:8 }).exists().isInt(),
   ],
 };

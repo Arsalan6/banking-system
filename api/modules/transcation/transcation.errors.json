@@ -7,5 +7,11 @@
   },
   "3003": {
     "msg": "Transcation amount is required and must be a number"
+  },
+  "3004": {
+    "msg": "Recipient Id must be a valid UUID."
+  },
+  "3005": {
+    "msg": "Donor Id must be a valid UUID."
   }
 }

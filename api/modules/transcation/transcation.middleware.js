@@ -10,4 +10,9 @@ module.exports = {
     check('transactionType', '3002').isIn(Object.values(constants.transactionType)),
     check('transactionAmount', '3003').exists().isInt(),
   ],
+  validateTransferFundsParams: [
+    check('recipientId', '3004').exists().isUUID(4),
+    check('donorId', '3005').exists().isUUID(4),
+    check('transactionAmount', '3003').exists().isInt(),
+  ],
 };
