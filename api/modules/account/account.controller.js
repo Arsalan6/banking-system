@@ -45,7 +45,7 @@ module.exports = {
   * @param next
   */
   async getAllCustomerAccounts(req, res, next) {
-    winston.info(`Fetching all accounts for customer with id: ${JSON.stringify(req.userId)}`);
+    winston.info(`Fetching all accounts for customer with id: ${JSON.stringify(req.customerId)}`);
     const [error, customerAccounts] = await to(dbConfig.getDbInstance().Account.findAll({
       attributes: [
         'id', 'uuid', 'name', 'number', 'currentAmount', 'creditCardIssued', 'creditCardIssuedAt', 'debitCardIssued',

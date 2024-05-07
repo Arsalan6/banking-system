@@ -14,4 +14,10 @@ module.exports = function (app, version) {
     errorMiddleware,
     transcationController.createTransaction,
   );
+  app.get(
+    `${version}${resource}`,
+    verifyToken,
+    errorMiddleware,
+    transcationController.getAllTransactions,
+  );
 }
