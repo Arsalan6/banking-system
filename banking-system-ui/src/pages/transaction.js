@@ -34,7 +34,7 @@ const Transaction = () => {
 
   return (
     <>
-      <div class="rounded-t-lg p-4 bg-white block sm:flex items-center justify-between border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+      <div class="p-4 bg-white block sm:flex items-center justify-between border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
         <div class="w-full mb-1">
           <div class="mb-4">
             <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">All transactions</h1>
@@ -97,7 +97,7 @@ const Transaction = () => {
           </div>
         </div>
       </div>
-      <div class="flex justify-end rounded-b-lg sticky bottom-0 right-0 items-center w-full p-4 bg-white border-t border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+      <div class="flex justify-end sticky bottom-0 right-0 items-center w-full p-4 bg-white border-t border-gray-200 dark:bg-gray-800 dark:border-gray-700">
         <div class="flex items-center mb-4 sm:mb-0">
           <span class="text-sm font-normal text-gray-500 dark:text-gray-400">Showing <span class="font-semibold text-gray-900 dark:text-white">1-20</span> of <span class="font-semibold text-gray-900 dark:text-white">{customerTransactions.length}</span></span>
           <button class="ml-2 inline-flex justify-center p-1 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">

@@ -12,7 +12,7 @@ const Layout = () => {
         <Sidebar />
         <div id="main-content" class="relative w-full h-screen overflow-y-auto bg-gray-50 lg:ml-64 dark:bg-gray-900">
           <main className=''>
-            <div className='px-4 pt-6'>
+            <div>
               <Outlet />
             </div>
           </main>

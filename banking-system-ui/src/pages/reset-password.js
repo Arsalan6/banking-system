@@ -32,7 +32,6 @@ const ResetPassword = () => {
     validationSchema: resetPasswordValidationSchema,
     validateOnBlur: true,
     onSubmit: (values) => {
-      console.log(values);
       setLoading(true);
       customerService.resetPassword({ ...values, id: searchParams.get("id") })
         .then(() => {

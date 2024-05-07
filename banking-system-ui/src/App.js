@@ -13,6 +13,7 @@ import EditProfilePage from "./pages/edit-profile";
 import ForgotPassword from "./pages/forgot-password";
 import ResetPassword from "./pages/reset-password";
 import Transaction from "./pages/transaction";
+import TransferMoney from "./pages/transfer-money";
 
 
 function App() {
@@ -64,6 +65,11 @@ function App() {
               exact
               path="transaction"
               element={<Transaction />}
+            />
+              <Route
+              exact
+              path="transfer-money"
+              element={<TransferMoney />}
             />
           </Route>
         </Route>

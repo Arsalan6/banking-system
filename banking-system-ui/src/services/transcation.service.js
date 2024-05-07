@@ -24,9 +24,20 @@ async function getAllTransactions(searchParams) {
     return response.data;
 }
 
+/**
+ * Transfer funds from one account to another
+ * @param transferFundsObj
+ * @returns response
+ */
+async function transferFunds(transferFundsObj) {
+    const response = await axios.post(`${constants.API_BASE_URL}/transcation/transfer`, transferFundsObj, { headers: { "Authorization": localStorage.getItem("customerToken") } });
+    return response.data;
+}
+
 const transcationService = {
     generateTranscation,
     getAllTransactions,
+    transferFunds,
 };
 
 export default transcationService;

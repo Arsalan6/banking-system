@@ -254,7 +254,6 @@ module.exports = {
         winston.error(`Error occurred while sending reset password email, ${errorResetEmail}`);
         next(errorResetEmail);
       } else {
-        console.log(resetEmail);
         winston.info(`Reset password email sent successfully`);
         res.status(200).send({
           success: 1,
