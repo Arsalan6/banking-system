@@ -14,7 +14,8 @@ const depositAmountValidationSchema = Yup.object().shape({
 
 const Dashboard = () => {
   const [loading, setLoading] = useState(false);
-  const [showDepositModal, setShowDepositModal] = useState(false);
+  const [showDepositWithdrawlModal, setShowDepositWithdrawlModal] = useState(false);
+  const [isWithdrawlMode, setIsWithdrawlMode] = useState(false);
   const [showCloseAccModal, setShowCloseAccModal] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState({});
   const [totalDepositedAmount, setTotalDepositedAmount] = useState(0);
@@ -26,18 +27,18 @@ const Dashboard = () => {
 
   const fetchAllAccounts = () => {
     accountService.getAllAccounts()
-    .then((response) => {
-      const accounts = [...response.data];
-      setCustomerAccounts(accounts);
-      setTotalDepositedAmount(accounts.reduce((n, { currentAmount }) => n + currentAmount, 0))
-    })
-    .catch((error) => {
-      toast.error("Something went wrong");
-    });
+      .then((response) => {
+        const accounts = [...response.data];
+        setCustomerAccounts(accounts);
+        setTotalDepositedAmount(accounts.reduce((n, { currentAmount }) => n + currentAmount, 0))
+      })
+      .catch((error) => {
+        toast.error("Something went wrong");
+      });
   }
 
-  const handleShowDepositModal = (selectedAccIdx) => {
-    setShowDepositModal(true);
+  const handleShowDepositWithdrawlModal = (selectedAccIdx) => {
+    setShowDepositWithdrawlModal(true);
     setSelectedAccount(customerAccounts[selectedAccIdx]);
   }
 
@@ -70,12 +71,14 @@ const Dashboard = () => {
       setLoading(true);
       transcationService.generateTranscation({
         accountId: selectedAccount.id,
-        transactionType: constants.transcationType.credit,
+        transactionType: isWithdrawlMode
+          ? constants.transcationType.debit
+          : constants.transcationType.credit,
         transactionAmount: values.depositAmount,
       })
         .then(() => {
           toast.success("Amount deposit successfully");
-          setShowDepositModal(false);
+          setShowDepositWithdrawlModal(false);
           fetchAllAccounts();
         })
         .catch((error) => {
@@ -158,11 +161,15 @@ const Dashboard = () => {
                             {account.type}
                           </td>
                           <td class="p-4 space-x-2 whitespace-nowrap">
-                            <button type="button" onClick={() => handleShowDepositModal(index)} class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                            <button type="button" onClick={() => { handleShowDepositWithdrawlModal(index); setIsWithdrawlMode(false) }} class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
                               <svg class="w-[18px] h-[18px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-width="1.5" d="M8 7V6a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-1M3 18v-7a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Zm8-3.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
                               </svg>
                               <span class="ml-2">Deposit</span>
+                            </button>
+                            <button type="button" onClick={() => { handleShowDepositWithdrawlModal(index); setIsWithdrawlMode(true) }} class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                              <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                              Withdraw
                             </button>
                             <button type="button" onClick={() => handleShowCloseAccModal(index)} class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:focus:ring-red-900">
                               <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
@@ -180,15 +187,15 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {showDepositModal ? (
+      {showDepositWithdrawlModal ? (
         <div class="flex justify-center dark:bg-gray-900/70 fixed left-0 right-0 z-50 items-center justify-cente overflow-x-hidden overflow-y-auto top-4 md:inset-0 h-modal sm:h-full" id="edit-user-modal">
           <div class="relative w-full h-full max-w-2xl px-4 md:h-auto">
             <div class="relative bg-white rounded-lg shadow dark:bg-gray-800">
               <div class="flex items-start justify-between p-5 border-b rounded-t dark:border-gray-700">
                 <h3 class="text-xl font-semibold dark:text-white">
-                  Deposit Money
+                  {isWithdrawlMode ? 'Withdraw' : 'Deposit'} Money
                 </h3>
-                <button type="button" onClick={() => setShowDepositModal(false)} class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-700 dark:hover:text-white" data-modal-toggle="edit-user-modal">
+                <button type="button" onClick={() => setShowDepositWithdrawlModal(false)} class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-700 dark:hover:text-white" data-modal-toggle="edit-user-modal">
                   <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
                 </button>
               </div>
@@ -230,11 +237,16 @@ const Dashboard = () => {
                     </div>
                   </div>
                 </div>
-                <div class="items-center p-6 border-t border-gray-200 rounded-b dark:border-gray-700">
+                <div class="items-center justify-between flex p-6 border-t border-gray-200 rounded-b dark:border-gray-700">
+                  <button onClick={() => setShowDepositWithdrawlModal(false)} class="text-gray-900 bg-white hover:bg-gray-100 focus:ring-4 focus:ring-primary-300 border border-gray-200 font-medium inline-flex items-center rounded-lg text-sm px-3 py-2.5 text-center dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-700">
+                    Cancel
+                  </button>
                   <button
                     type="submit"
                     disabled={loading}
-                    class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">{loading ? "Loading..." : "Deposit"}</button>
+                    class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                    {loading ? "Loading..." : isWithdrawlMode ? 'Withdraw' : 'Deposit'}
+                  </button>
                 </div>
               </form>
             </div>
@@ -242,14 +254,12 @@ const Dashboard = () => {
         </div>
       ) : null}
 
-
       {showCloseAccModal ? (
         <div class="flex justify-center dark:bg-gray-900/70 fixed left-0 right-0 z-50 items-center justify-cente overflow-x-hidden overflow-y-auto top-4 md:inset-0 h-modal sm:h-full" id="edit-user-modal">
           <div class="relative w-full h-full max-w-2xl px-4 md:h-auto">
             <div class="relative bg-white rounded-lg shadow dark:bg-gray-800">
               <div class="flex items-start items-center justify-between p-5 border-b rounded-t dark:border-gray-700">
                 <svg class="w-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-
                 <h3 class="text-xl font-semibold dark:text-white ml-2">
                   Close account permanently
                 </h3>
@@ -257,17 +267,17 @@ const Dashboard = () => {
                   <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
                 </button>
               </div>
-                <div class="p-6 space-y-6">
-                  <h3 class="text-lg text-gray-500 dark:text-gray-400">Are you sure you want to close this account permanently?</h3>
-                </div>
-                <div class="flex items-center justify-between p-6 border-t border-gray-200 rounded-b dark:border-gray-700">
-                  <button onClick={() => setShowCloseAccModal(false)} class="text-gray-900 bg-white hover:bg-gray-100 focus:ring-4 focus:ring-primary-300 border border-gray-200 font-medium inline-flex items-center rounded-lg text-sm px-3 py-2.5 text-center dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-700" data-drawer-hide="drawer-delete-product-default">
-                    No, cancel
-                  </button>
-                  <button onClick={() => handleDeleteAccount()} class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm inline-flex items-center px-3 py-2.5 text-center mr-2 dark:focus:ring-red-900">
-                    Yes, I'm sure
-                  </button>
-                </div>
+              <div class="p-6 space-y-6">
+                <h3 class="text-lg text-gray-500 dark:text-gray-400">Are you sure you want to close this account permanently?</h3>
+              </div>
+              <div class="flex items-center justify-between p-6 border-t border-gray-200 rounded-b dark:border-gray-700">
+                <button onClick={() => setShowCloseAccModal(false)} class="text-gray-900 bg-white hover:bg-gray-100 focus:ring-4 focus:ring-primary-300 border border-gray-200 font-medium inline-flex items-center rounded-lg text-sm px-3 py-2.5 text-center dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-700">
+                  No, cancel
+                </button>
+                <button onClick={() => handleDeleteAccount()} class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm inline-flex items-center px-3 py-2.5 text-center mr-2 dark:focus:ring-red-900">
+                  Yes, I'm sure
+                </button>
+              </div>
             </div>
           </div>
         </div>
