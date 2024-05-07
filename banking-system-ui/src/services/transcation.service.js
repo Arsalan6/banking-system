@@ -14,8 +14,19 @@ async function generateTranscation(transcationObj) {
     return response.data;
 }
 
+/**
+ * Fetches all transactions for logged in customer
+ * @param searchParams
+ * @returns response
+ */
+async function getAllTransactions(searchParams) {
+    const response = await axios.get(`${constants.API_BASE_URL}/transcation?q=${searchParams}`, { headers: { "Authorization": localStorage.getItem("customerToken") } });
+    return response.data;
+}
+
 const transcationService = {
     generateTranscation,
+    getAllTransactions,
 };
 
 export default transcationService;

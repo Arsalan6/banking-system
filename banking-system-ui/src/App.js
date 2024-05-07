@@ -12,6 +12,7 @@ import NewAccount from "./pages/new-account";
 import EditProfilePage from "./pages/edit-profile";
 import ForgotPassword from "./pages/forgot-password";
 import ResetPassword from "./pages/reset-password";
+import Transaction from "./pages/transaction";
 
 
 function App() {
@@ -29,19 +30,18 @@ function App() {
         pauseOnHover
         theme="dark"
       />
-
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/registration" element={<Registration />} />
         <Route
-            exact
-            path="forgot-password"
-            element={<ForgotPassword />}
-          />
-          <Route
-            path="reset-password"
-            element={<ResetPassword />}
-          />
+          exact
+          path="forgot-password"
+          element={<ForgotPassword />}
+        />
+        <Route
+          path="reset-password"
+          element={<ResetPassword />}
+        />
 
         <Route exact path="/" element={<ProtectedRoute />}>
           <Route exact path="/" element={<Layout />}>
@@ -60,10 +60,13 @@ function App() {
               path="edit-profile"
               element={<EditProfilePage />}
             />
+            <Route
+              exact
+              path="transaction"
+              element={<Transaction />}
+            />
           </Route>
         </Route>
-
-
       </Routes>
     </BrowserRouter>
   );
